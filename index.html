@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<title>Front</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col">
+                <div class="jumbotron">
+                    <h1 class="display-4">Shippers</h1>
+                    <section v-if="errored">
+                        <p>We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
+                    </section>
+                    <section v-else>
+                        <div v-if="loading">
+                            <p>Loading...</p>
+                        </div>
+                        <div v-else >
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="shipper in info">
+                                    <td>{{shipper.id}}</td>
+                                    <td>{{shipper.name}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <hr class="my-4">
+                    
+                    <a class="btn btn-primary btn-lg" href="#" @click="getShippers" role="button">Refresh</a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        data = {
+            info: null,
+            loading: true,
+            errored: false
+        }
+
+        new Vue({
+            el: '#app',
+            data () {
+                return data
+            },
+            methods: {
+                getShippers: function () {
+                    this.loading = true
+                    axios.get('http://localhost:8000/api/shipper')
+                    .then(response => {
+                        this.info = response.data
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        this.errored = true
+                    })
+                    .finally(() => {
+                        this.loading = false
+                    })
+                }
+            },
+            mounted () {
+                this.getShippers()
+            }
+        })
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
